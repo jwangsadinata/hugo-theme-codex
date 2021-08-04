@@ -1,23 +1,78 @@
-{{ define "styles" }}
-    {{ $.Scratch.Set "style_opts" (dict "src" "scss/pages/about.scss" "dest" "css/about.css") }}
+{{ define "scripts" }}
+<script>
+  var typed = new Typed('#typed', {
+    stringsElement: '#sentences',
+    typeSpeed: 50,
+    showCursor: false,
+    startDelay: 40,
+  });
+</script>
+
 {{ end }}
 
-{{ define "main" }}
+{{ define "styles" }}
+  {{ $.Scratch.Set "style_opts" (dict "src" "scss/pages/about.scss" "dest" "css/about.css") }}
+{{ end }}
 
+{{ define "main-section" }}
 <div class="splash-container">
   <div class="splash">
-    
-    <h1>{{ .Params.heading }}<span class="fancy">.</span></h1>
-    {{ if isset .Params "handle" }}
-    <span class="handle">@{{ .Params.handle }}</span>
-    {{ end }}
-    <h2>
-      {{ .Params.subheading }}
-    </h2>
-    <!-- Replace MEEEEE -->
+    <div class="main-image-container">
+      {{ if isset .Site.Params "logo" }}
+        <img src="{{ .Site.Params.logo }}" width=180 height=80 class="main-logo" alt="{{ .Site.Params.logoAlt }}">
+      {{ end }} 
+      {{ if isset .Site.Params "image" }}
+        <img src="{{ .Site.Params.image }}" width=400 height=400 class="main-image" alt="{{ .Site.Params.imageAlt }}">
+      {{ end }}
+    </div>
 
+    <div>
+      <h1>Hello, I am a</h1>
+      {{ range $section := .Params.sections }}
+        <h1 class="typed-element" style="margin-top: 0">{{ $section.name }}</h1>
+      {{ end }}
+      <div id="sentences">
+      {{ range $sentence := .Params.sentences }}
+        <p>{{ $sentence }}</p>
+      {{ end }}
+      </div>
+
+      <h4 id="typed"></h4>
+     
+      {{ partial "social-icons.html" .}}
+    </div>
+  </div>
+</div>
+{{ end }}
+
+{{ define "sections" }}
+  {{ range $section := .Params.sections }}
+    {{ $slug := anchorize $section.name }}
+    <div class="section" id="section-{{ $slug }}">
+      <main>
+      <div class="splash-container">
+        <div class="splash">
+          <h1 id="typed-{{ $slug }}"></h1>
+          <p>{{ $section.description }}</p>
+        </div>
+      </div>
+      </main>
+    </div>
+  {{ end }}
+{{ end }}
+
+{{ define "footer" }} 
+<div id="big-screen-footer">
+  <div class="footer-left">
+    <h4 class="copy">{{ replace .Site.Copyright "{year}" now.Year }} &mdash; All Rights Reserved </h5>
+  </div>
+  <div class="footer-right">
     {{ partial "social-icons.html" .}}
   </div>
 </div>
 
+<div id="small-screen-footer">
+  {{ partial "social-icons.html" .}}
+  <h5 class="copy">{{ replace .Site.Copyright "{year}" now.Year }} &mdash; All Rights Reserved </h5>
+</div>
 {{ end }}

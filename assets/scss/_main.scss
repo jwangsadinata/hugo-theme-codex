@@ -4,6 +4,42 @@
 @import "partials/typography";
 @import "partials/nav";
 @import "partials/social-icons";
+@import "partials/typed-element";
+
+.arrow-holder {
+  z-index: 99;
+  width: 100%;
+  position: fixed;
+  height: 4%;
+  bottom: 5%;
+  font-size: 60px;
+
+  color: #999999;
+}
+
+#arrow-down {
+  display: none;
+}
+
+.main-logo {
+  padding: 0 2rem 0 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
+  height: auto;
+}
+
+.main-image {
+  display: block;
+  padding: 2rem 3rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 90%;
+  height: auto;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+}
 
 body.nav--active {
   overflow: hidden;
@@ -19,4 +55,62 @@ main {
   @media screen and (max-width: $medium - 1) {
     padding-top: calc(3rem + #{$burgerContainerHeight});
   }
+}
+
+#section-footer {
+  //  background-color: #D3649F;
+  background-color: $footerColor;
+  opacity: 75%;
+}
+
+#small-screen-footer {
+  display: block;
+  height: 100%;
+  position: relative;
+  text-align: center;
+
+  @media screen and (min-width: $medium) {
+    display: none !important;
+  }
+
+  @media screen and (max-width: $medium - 1) {
+    padding-top: 10px;
+  }
+}
+
+#small-screen-footer .social-icons {
+  justify-content: center;
+}
+
+#small-screen-footer .social-icons a {
+  padding: 0 0.2rem 0.5rem 0.2rem;
+}
+
+#small-screen-footer .copy {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 12px;
+}
+
+#big-screen-footer {
+  height: 100%;
+  width: auto;
+  position: relative;
+  justify-content: space-between;
+
+  @media screen and (min-width: $medium) {
+    display: flex;
+  }
+
+  @media screen and (max-width: $medium - 1) {
+    display: none !important;
+  }
+}
+
+#big-screen-footer .footer-left {
+  padding: 0.2rem 0 0 2rem;
+}
+
+#big-screen-footer .footer-right {
+  padding: 0 2rem 0.5rem 0;
 }

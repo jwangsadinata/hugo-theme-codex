@@ -23,6 +23,20 @@
 
   {{ partial "favicon.html" }}
 
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome-animation/css/font-awesome-animation.min.css">
+
+  <!-- fullPage.js -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.2/fullpage.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.2/fullpage.min.css" />
+  
+  <!-- typed.js -->
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
   <!-- Styles -->
   {{ block "styles" . }} {{ end }} <!-- Get "style_opts" variable from "styles" block -->
   {{ $base_styles_opts := .Scratch.Get "style_opts" | default (dict "src" "scss/pages/about.scss" "dest" "css/about.css") }}
@@ -44,6 +58,66 @@
   {{- if not .Site.IsServer -}}
       {{ template "_internal/google_analytics_async.html" . }}
   {{- end -}}
+  <script>
+    $(document).ready(function() {
+      var arrow_holder = $("#arrow-down");
+      var visited = [true, false, false, false, false]
+
+      arrow_holder.delay(600).fadeIn(1000);
+             
+	  $('#fullpage').fullpage({
+		autoScrolling: true,
+        licenseKey: 'XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX',
+        onLeave: (origin, dest, direction) => {
+          if (dest.index > 0 && dest.index < 5) {
+            var id = dest.item.id.replace("section-", "")
+            var text = id.replace("-", " ").replace(/\w\S*/g,
+                      (w) => (w.replace(/^\w/,
+                      (c) => c.toUpperCase()))
+                  ) + '<span class="fancy">.</span>';
+
+            if (!visited[dest.index]) {
+              var typed = new Typed('#typed-' + id, {
+                strings: [text],
+                typeSpeed: 30,
+                showCursor: false,
+              });
+            }
+          }
+
+		  if (origin.index == 4 && direction == 'down') {
+		    arrow_holder.fadeOut("fast", function() {
+		      $(".arrow-holder").css("z-index", "0");
+		    });
+		  }
+
+		  if (origin.index == 5 && direction == 'up') {
+		    arrow_holder.fadeIn(1000, function() {
+		      $(".arrow-holder").css("z-index", "99");
+		    });
+          }
+
+          visited[dest.index] = true
+        }
+	  });
+
+	  (function() {
+		var quotes = $(".typed-element");
+		var quoteIndex = -1;
+		
+	    function showNextQuote() {
+		  ++quoteIndex;
+		  quotes.eq(quoteIndex % quotes.length)
+			    .fadeIn(1000)
+			    .delay(2000)
+			    .fadeOut(1000, showNextQuote);
+	    }
+			    
+	    showNextQuote();
+      })();
+    });
+
+  </script>
 </head>
 
 <body>
@@ -51,11 +125,25 @@
 
   {{ partial "nav.html" .}}
 
-  <main>
-    {{ block "main" . }} {{ end }}
-  </main>
-
-  {{ block "footer" . }} {{ end }}
+  {{ if .IsHome }}
+    {{ partial "arrow-holder.html" .}}
+ 
+    <div id="fullpage">
+      <div class="section" id="section-main">
+        <main>
+          {{ block "main-section" . }} {{ end }}
+        </main>
+      </div>
+        {{ block "sections" . }} {{ end }}
+    	<div class="section fp-auto-height" id="section-footer">
+        {{ block "footer" . }} {{ end }}
+      </div>
+    </div>
+  {{ else }}
+    <main>
+      {{ block "main" . }} {{ end }}
+    </main>
+  {{ end }}
 
   {{ $script := resources.Get "js/index.js" | minify | fingerprint }}
   <script src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity | safeHTMLAttr }}" crossorigin="anonymous"></script>

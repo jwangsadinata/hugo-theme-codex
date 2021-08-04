@@ -18,6 +18,11 @@ $tocBreakpoint: 1024px;
   max-width: 34rem;
   margin: 0 auto;
 
+  a {
+    color: $secondary;
+    text-decoration: none;
+  }
+
   h2,
   h3 {
     position: relative;

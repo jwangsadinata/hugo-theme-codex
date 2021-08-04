@@ -9,7 +9,9 @@
       <div class="post__container">
         <div class="post">
           <header class="post__header">
+            {{ if .Params.showTitle }}
             <h1 id="post__title">{{.Title}}</h1>
+            {{ end }}
             {{ if .Date }}<time datetime="{{ .Date }}" class="post__date">{{ .Date.Format $dateFormat }}</time> {{ end }}
           </header>
           <article class="post__content">

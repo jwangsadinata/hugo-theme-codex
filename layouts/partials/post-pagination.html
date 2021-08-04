@@ -1,3 +1,6 @@
+{{ if .Params.singlePage }}
+<div class="pagination"></div>
+{{ else }}
 <div class="pagination">
   {{if .PrevInSection}}
     <a class="pagination__item" href="{{.PrevInSection.Permalink}}">
@@ -13,3 +16,4 @@
     </a>
   {{end}}
 </div>
+{{ end }}
