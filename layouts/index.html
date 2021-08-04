@@ -1,15 +1,3 @@
-{{ define "scripts" }}
-<script>
-  var typed = new Typed('#typed', {
-    stringsElement: '#sentences',
-    typeSpeed: 50,
-    showCursor: false,
-    startDelay: 40,
-  });
-</script>
-
-{{ end }}
-
 {{ define "styles" }}
   {{ $.Scratch.Set "style_opts" (dict "src" "scss/pages/about.scss" "dest" "css/about.css") }}
 {{ end }}

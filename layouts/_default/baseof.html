@@ -15,7 +15,7 @@
   <!-- PWA -->
   <link rel="manifest" href="/manifest.json">
 
-  <!-- Icons --> 
+  <!-- Icons -->
   <link rel="apple-touch-icon" sizes="57x57" href="/icons/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="/icons/apple-icon-60x60.png">
   <link rel="apple-touch-icon" sizes="72x72" href="/icons/apple-icon-72x72.png">
@@ -42,20 +42,6 @@
   <meta name="twitter:creator" content="{{ .Site.Params.twitterCreator | default .Site.Params.twitter }}" />
   {{ end }}
 
-  <!-- jQuery -->
-  <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
-
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="/css/font-awesome.min.css">
-  <link rel="stylesheet" href="/css/font-awesome-animation.min.css">
-
-  <!-- fullPage.js -->
-  <script type="text/javascript" src="/js/fullpage-3.1.2.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="/css/fullpage-3.1.2.min.css" />
-  
-  <!-- typed.js -->
-  <script type="text/javascript" src="/js/typed-2.0.12.min.js"></script>
-
   <!-- Styles -->
   {{ block "styles" . }} {{ end }} <!-- Get "style_opts" variable from "styles" block -->
   {{ $base_styles_opts := .Scratch.Get "style_opts" | default (dict "src" "scss/pages/about.scss" "dest" "css/about.css") }}
@@ -77,67 +63,114 @@
   {{- if not .Site.IsServer -}}
       {{ template "_internal/google_analytics_async.html" . }}
   {{- end -}}
+  <script src="/js/fallback-1.1.9.min.js"></script>
   <script>
+    fallback.load({
+      page_css: [
+        '/css/about.min.81ac23f5b936cda22cc966c1be895f409cd6f417fa692785dd448ea6fc0fd31b.css',
+        '/css/custom.min.a2b7f90e8c895082054257b0b301537c261c7d42856f958cff2e7390d78c44fc.css',
+      ],
+      jQuery: [
+        'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js',
+        '/js/jquery-3.6.0.min.js'
+      ],
 
+      'font-awesome.css': [
+        'https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css',
+        '/css/font-awesome.min.css'
+      ],
 
-    $(document).ready(function() {
-      var arrow_holder = $("#arrow-down");
-      var visited = [true, false, false, false, false]
+      'font-awesome-animation.css': [
+        'https://cdn.jsdelivr.net/npm/font-awesome-animation/css/font-awesome-animation.min.css',
+        '/css/font-awesome-animation.min.css'
+      ],
 
-      arrow_holder.delay(600).fadeIn(1000);
+      'fullPage.js': [
+        'https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.2/fullpage.min.js',
+        '/js/fullpage-3.1.2.min.js'
+      ],
+
+      'fullPage.css': [
+        'https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.2/fullpage.min.css',
+        '/css/fullpage-3.1.2.min.css'
+      ],
+
+      'typed.js': [
+        'https://cdn.jsdelivr.net/npm/typed.js@2.0.12',
+        '/js/typed-2.0.12.min.js'
+      ],
+    }, {
+      shim: {
+        'fullPage.js': ['jQuery'],
+        'fullPage.css': ['jQuery', 'fullPage.js'],
+        'typed.js': ['jQuery']
+      },
+
+      callback: (success, failed) => {
+        var arrow_holder = $("#arrow-down");
+        var visited = [true, false, false, false, false]
+
+        var typed = new Typed('#typed', {
+          stringsElement: '#sentences',
+          typeSpeed: 50,
+          showCursor: false,
+          startDelay: 40,
+        });
+
+        arrow_holder.delay(600).fadeIn(1000);
              
-	  $('#fullpage').fullpage({
-		autoScrolling: true,
-        licenseKey: 'XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX',
-        onLeave: (origin, dest, direction) => {
-          if (dest.index > 0 && dest.index < 5) {
-            var id = dest.item.id.replace("section-", "")
-            var text = id.replace("-", " ").replace(/\w\S*/g,
-                      (w) => (w.replace(/^\w/,
-                      (c) => c.toUpperCase()))
+        $('#fullpage').fullpage({
+          autoScrolling: true,
+          licenseKey: 'XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX',
+          onLeave: (origin, dest, direction) => {
+            if (dest.index > 0 && dest.index < 5) {
+              var id = dest.item.id.replace("section-", "")
+              var text = id.replace("-", " ").replace(/\w\S*/g,
+                        (w) => (w.replace(/^\w/,
+                        (c) => c.toUpperCase()))
                   ) + '<span class="fancy">.</span>';
 
-            if (!visited[dest.index]) {
-              var typed = new Typed('#typed-' + id, {
-                strings: [text],
-                typeSpeed: 30,
-                showCursor: false,
+              if (!visited[dest.index]) {
+
+                var typed = new Typed('#typed-' + id, {
+                  strings: [text],
+                  typeSpeed: 30,
+                  showCursor: false,
+                });
+              }
+            }
+
+            if (origin.index == 4 && direction == 'down') {
+              arrow_holder.fadeOut("fast", function() {
+                $(".arrow-holder").css("z-index", "0");
               });
             }
+
+            if (origin.index == 5 && direction == 'up') {
+              arrow_holder.fadeIn(1000, function() {
+                $(".arrow-holder").css("z-index", "99");
+              });
+            }
+            visited[dest.index] = true
           }
+        });
 
-		  if (origin.index == 4 && direction == 'down') {
-		    arrow_holder.fadeOut("fast", function() {
-		      $(".arrow-holder").css("z-index", "0");
-		    });
-		  }
-
-		  if (origin.index == 5 && direction == 'up') {
-		    arrow_holder.fadeIn(1000, function() {
-		      $(".arrow-holder").css("z-index", "99");
-		    });
-          }
-
-          visited[dest.index] = true
-        }
-	  });
-
-	  (function() {
-		var quotes = $(".typed-element");
-		var quoteIndex = -1;
+        (function() {
+          var quotes = $(".typed-element");
+          var quoteIndex = -1;
 		
-	    function showNextQuote() {
-		  ++quoteIndex;
-		  quotes.eq(quoteIndex % quotes.length)
-			    .fadeIn(1000)
-			    .delay(2000)
-			    .fadeOut(1000, showNextQuote);
-	    }
+          function showNextQuote() {
+            ++quoteIndex;
+            quotes.eq(quoteIndex % quotes.length)
+                  .fadeIn(1000).delay(2000).fadeOut(1000, showNextQuote);
+          }
 			    
-	    showNextQuote();
-      })();
-    });
+          showNextQuote();
+        })();
 
+        $("#section-footer").load(" #section-footer > *");
+      }
+    });
   </script>
 </head>
 
@@ -156,7 +189,7 @@
         </main>
       </div>
         {{ block "sections" . }} {{ end }}
-    	<div class="section fp-auto-height" id="section-footer">
+      <div class="section fp-auto-height" id="section-footer">
         {{ block "footer" . }} {{ end }}
       </div>
     </div>
